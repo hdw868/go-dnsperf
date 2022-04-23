@@ -15,6 +15,7 @@ var ErrInvalidFormat = errors.New("invalid format")
 func inputTransformer(input string) (*dns.Msg, error) {
 	var domain, qType, subnet string
 
+	// format: domain A/AAAA [subnet]
 	n, err := fmt.Sscanf(input, "%s %s %s", &domain, &qType, &subnet)
 	if err != nil && n < 2 {
 		return nil, fmt.Errorf("%w, want:\"Domain Qtype [Subnet]\", got: %q", ErrInvalidFormat, input)
@@ -25,6 +26,7 @@ func inputTransformer(input string) (*dns.Msg, error) {
 		return nil, fmt.Errorf("%w, invalid Qtype: %q", ErrInvalidFormat, qType)
 	}
 
+	// assemble
 	msg := new(dns.Msg)
 	msg.SetQuestion(dns.Fqdn(domain), msgType)
 
@@ -61,16 +63,6 @@ func parseDatafile(dfile string) []*dns.Msg {
 		}
 	}
 	return requests
-}
-
-func RequestGenerator(filename string, i int) *dns.Msg {
-	data := parseDatafile(filename)
-	if len(data) < 1 {
-		fmt.Printf("%v: at least one valid input line is required", ErrInvalidFormat)
-	}
-
-	request := data[i%len(data)]
-	return request
 }
 
 func LoadRequests(filename string, round int, out chan *dns.Msg) error {

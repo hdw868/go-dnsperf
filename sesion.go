@@ -87,8 +87,10 @@ func (s *LoadSession) RunSingleLoadSession(inputChan chan *dns.Msg) {
 			}
 		}
 
+		// do send
 		respCode, respSize, respDuration, reqSize := DoSend(r, m)
 
+		// do statistic
 		stats.NumSend++
 		if respCode >= 0 {
 			stats.TotalRequestSize += int64(reqSize)
@@ -103,7 +105,7 @@ func (s *LoadSession) RunSingleLoadSession(inputChan chan *dns.Msg) {
 			stats.NumTimeout++
 		}
 	}
-	// send to stats channel
+	// add result to channel
 	stats.endTime = time.Now()
 	s.statsAggregator <- stats
 }
