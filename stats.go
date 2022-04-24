@@ -81,6 +81,7 @@ func (s *Stats) printRcodes() {
 			s.ResponseCodes[i],
 			SafeDiv(s.ResponseCodes[i]*100, s.NumCompleted))
 	}
+	fmt.Printf("\n")
 }
 
 func SafeDiv(m, n int64) float64 {
